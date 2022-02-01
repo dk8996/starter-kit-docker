@@ -23,7 +23,11 @@
 	"settings": {},
 
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": []
+	"extensions": [
+	        "ms-azuretools.vscode-docker",
+		"shardulm94.trailing-spaces",
+		"juanblanco.solidity",
+		"mikestead.dotenv"],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
