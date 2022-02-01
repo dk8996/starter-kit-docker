@@ -4,18 +4,13 @@ services:
     ganache-cli:
         container_name: ganache-cli
         build:
-            context: ./docker/ganache-cli
+            context: ./ganache-cli
         # note host:container
         ports:
             - 5545:8545
     truffle-suite:
         container_name: truffle-suite
         build:
-            context: ./docker/truffle-suite
-                # volumes
-        volumes:
-            - ".:/workspace"
-        # command: >
-        #     bash
+            context: ./truffle-suite
         stdin_open: true # docker run -i
         tty: true # docker run -t
