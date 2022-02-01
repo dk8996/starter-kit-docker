@@ -4,9 +4,14 @@ require('babel-polyfill');
 module.exports = {
   networks: {
     development: {
-      host: "127.0.0.1",
-      port: 7545,
-      network_id: "*" // Match any network id
+      host: "ganache-cli",
+      port: 8545,
+      network_id: "57771"
+    },
+    test: {
+      host: "ganache-cli",
+      port: 8545,
+      network_id: "57771"
     },
   },
   contracts_directory: './src/contracts/',
@@ -20,3 +25,4 @@ module.exports = {
     }
   }
 }
+
