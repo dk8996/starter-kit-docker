@@ -9,4 +9,8 @@ There are two dockerfiles, one for the truffle development tools and React, and 
 ## ganache-cli
 We simply start a new instace of Ganache cli in the Dockerfile. We set the port to 57771. [Dockerfile](/docker/ganache-cli/Dockerfile)
 
+## truffle
+We create an image based on Ubuntu, installing node and npm. Then installing truffle suite. [Dockerfile](/docker/truffle-suite/Dockerfile)
+
+
 
