@@ -12,5 +12,8 @@ We simply start a new instace of Ganache cli in the Dockerfile. We set the port 
 ## truffle
 We create an image based on Ubuntu, installing node and npm. Then installing truffle suite. [Dockerfile](/docker/truffle-suite/Dockerfile)
 
+## Running images
+We will use the `docker-compose up` from the root directory to get it up and running using the [docker-compose.yml](/docker-compose.yml)
+
 
 

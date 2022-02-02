@@ -1,8 +1,8 @@
-FROM node:10
+FROM node:17
 
 # Install Truffle
-RUN npm install -g truffle
-RUN npm config set bin-links false
+RUN npm install -g truffle@5.4.29
+RUN truffle version
 
 # Move Contract Files
 COPY migrations ./workspace/migrations
@@ -12,7 +12,7 @@ COPY truffle-config.js ./workspace/truffle-config.js
 COPY src ./workspace/src
 COPY public ./workspace/public
 COPY package.json ./workspace/package.json
-COPY package-lock.json ./workspace/package-lock.json
 
 # Clean Install NPM Dependencies
-RUN cd workspace && npm ci
+WORKDIR ./workspace
+RUN npm i
