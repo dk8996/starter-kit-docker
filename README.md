@@ -7,13 +7,17 @@ Inspired by [Master Blockchain Step-By-Step](https://www.youtube.com/watch?v=sCE
 There are two dockerfiles, one for the truffle development tools and React, and another for ganache-cli. We will use the docker compose file to start and stop the two containers.
 
 ## ganache-cli
-We simply start a new instace of Ganache cli in the Dockerfile. We set the port to 57771. [Dockerfile](/docker/ganache-cli/Dockerfile)
+We simply start a new instace of Ganache cli in the Dockerfile. We set the port to 8545. [Dockerfile](/ganache-cli/Dockerfile)
 
 ## truffle
-We create an image based on Ubuntu, installing node and npm. Then installing truffle suite. [Dockerfile](/docker/truffle-suite/Dockerfile)
+We create an image based on Ubuntu, installing node and npm. Then installing truffle suite. [Dockerfile](/truffle-suite/Dockerfile)
 
-## Running images
-We will use the `docker-compose up` from the root directory to get it up and running using the [docker-compose.yml](/docker-compose.yml)
+## Getting Started
+We will use the `docker-compose up` from the root directory to get it up and running using the [docker-compose.yml](/docker-compose.yml). This is create the stack with two Docker containers, One is Ganache and the other one will be Truffle + React.
+
+All the src code will be copied over to the Truffle container see the [Dockerfile](/truffle-suite/Dockerfile). 
+
+You can now connect to the the Truffle container using this command `docker exec -it truffle-suite bash`.
 
 
 
