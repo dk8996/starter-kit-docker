@@ -8,7 +8,14 @@ contract EthSwap {
     Token public token;
     uint rate = 100;
 
-    event TokenPurchased(
+    event TokensPurchased(
+        address account,
+        address token,
+        uint amount,
+        uint rate
+    );
+
+    event TokensSold(
         address account,
         address token,
         uint amount,
@@ -30,6 +37,21 @@ contract EthSwap {
         token.transfer(msg.sender, tokenAmount);
 
         // Emit an event
-        emit TokenPurchased(msg.sender, address(token), tokenAmount, rate);
+        emit TokensPurchased(msg.sender, address(token), tokenAmount, rate);
+    }
+
+    function sellTokens(uint256 _amount) public payable {
+        // Calculate the amount of Ether to redeem
+        uint256 etherAmount = _amount / rate;
+
+        // Require that EthSwap has enough Eth
+        require(address(this).balance >= etherAmount);
+
+        // Perform sale
+        token.transferFrom(msg.sender, address(this), _amount);
+        payable(msg.sender).transfer(etherAmount);
+
+        // Emit an event
+        emit TokensPurchased(msg.sender, address(token), _amount, rate);
     }
 }
