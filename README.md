@@ -13,11 +13,12 @@ We simply start a new instace of Ganache cli in the Dockerfile. We set the port 
 We create an image based on Ubuntu, installing node and npm. Then installing truffle suite. [Dockerfile](/truffle-suite/Dockerfile)
 
 ## Getting Started
-We will use the `docker-compose up` from the root directory to get it up and running using the [docker-compose.yml](/docker-compose.yml). This is create the stack with two Docker containers, One is Ganache and the other one will be Truffle + React.
+1. We will use the `docker-compose up` from the root directory to get it up and running using the [docker-compose.yml](/docker-compose.yml). This will create the stack with two Docker containers, One is Ganache and the other one will be Truffle + React.
 
-All the src code will be copied over to the Truffle container see the [Dockerfile](/truffle-suite/Dockerfile). 
+2. All the src code will be copied over to the Truffle container see the [Dockerfile](/truffle-suite/Dockerfile). 
 
-You can now connect to the the Truffle container using this command `docker exec -it truffle-suite bash`.
+3. You can now connect to the the Truffle container using this command `docker exec -it truffle-suite bash`.
 
+4. Make sure your in the `workspace` directory inside your Truffle container. From there you can run `truffle version` to make sure everything is installed.
 
 
