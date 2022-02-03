@@ -41,6 +41,9 @@ contract EthSwap {
     }
 
     function sellTokens(uint256 _amount) public payable {
+        // User can't sell more tokens than they have
+        require(token.balanceOf(msg.sender) >= _amount);
+
         // Calculate the amount of Ether to redeem
         uint256 etherAmount = _amount / rate;
 

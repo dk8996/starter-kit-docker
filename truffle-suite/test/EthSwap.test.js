@@ -94,6 +94,9 @@ contract('EthSwap',(accounts) => {
             assert.equal(event.token, token.address)
             assert.equal(event.amount.toString(), tokens('100').toString())
             assert.equal(event.rate.toString(), '100')
+
+            //FAILURE: investor can't sell more tokens than they have
+            await ethSwap.sellTokens(tokens('500'), {from: investor}).should.be.rejected
         })
     })
 })
