@@ -14,24 +14,31 @@ class App extends Component {
   componentDidMount() {
     this._asyncRequest = this.loadWeb3().then(() => {
         this._asyncRequest = null
-        this.loadBlockchainData()
       }
     );
 
   }
   componentWillUnmount() {
     if (this._asyncRequest) {
-      this._asyncRequest.disconnect();
+      this._asyncRequest.cancel();
     }
   }
 
-  async loadBlockchainData() {
-    const web3 = window.web3
-    const accounts = await web3.eth.getAccounts()
-    this.setState({account: accounts[0]})
-    const ethBalance = await web3.eth.getBalance(this.state.account)
-    this.setState({ethBalance})
-    console.log(this.state)
+  async handleAccountsChanged(accounts) {
+    console.log("Call handleAccountsChanged")
+    if (accounts.length === 0) {
+       // MetaMask is locked or the user has not connected any accounts
+       console.log('Please connect to MetaMask.')
+       this.setState({account: 'Please connect to MetaMask.'})
+       this.setState({ethBalance: ''})
+    } else if (accounts[0] !== this.state.account) {
+      const web3 = window.web3
+      this.setState({account: accounts[0]})
+      const ethBalance = await web3.eth.getBalance(this.state.account)
+      this.setState({ethBalance})
+      console.log(this.state)
+    }
+
   }
 
   async loadWeb3() {
@@ -39,8 +46,22 @@ class App extends Component {
     if (provider) {
       // Set the provider for web3 lib. provider here is the same as windows.ethereum
       window.web3 = new Web3(provider);
+      //Update account when account is changed
+      provider.on('accountsChanged', (accounts) => {this.handleAccountsChanged(accounts)});
+
       // enable the provider, this will open up the MetaMask wallet and ask the user to unlock
-      provider.enable()
+      provider.request({ method: 'eth_requestAccounts' }).then((accounts) =>{
+            this.handleAccountsChanged(accounts)
+          }
+        ).catch((error) => {
+        if (error.code === 4001) {
+          // EIP-1193 userRejectedRequest error
+          window.alert('Please connect to MetaMask.');
+          console.log('Please connect to MetaMask.');
+        } else {
+          console.error(error);
+        }
+      });
     } else {
       console.log('Please install MetaMask!');
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
