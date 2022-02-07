@@ -32,6 +32,7 @@ class App extends Component {
        this.setState({account: 'Please connect to MetaMask.'})
        this.setState({ethBalance: ''})
     } else if (accounts[0] !== this.state.account) {
+      //load Blockchain Data
       const web3 = window.web3
       this.setState({account: accounts[0]})
       const ethBalance = await web3.eth.getBalance(this.state.account)
