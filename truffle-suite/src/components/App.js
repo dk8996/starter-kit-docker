@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
+import Token from '../abis/Token.json';
+import EthSwap from '../abis/EthSwap.json';
 import Navbar from './Navbar';
+import Main from './Main';
 import './App.css';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { account: '', ethBalance: '0' };
+    this.state = { account: '', ethBalance: '0', toke: {}, tokenBalance: '0', ethSwap: {} };
   }
 
   componentDidMount() {
@@ -33,13 +36,39 @@ class App extends Component {
        this.setState({ethBalance: ''})
     } else if (accounts[0] !== this.state.account) {
       //load Blockchain Data
-      const web3 = window.web3
-      this.setState({account: accounts[0]})
-      const ethBalance = await web3.eth.getBalance(this.state.account)
-      this.setState({ethBalance})
-      console.log(this.state)
+      await this.loadBlockchainData(accounts[0])
     }
 
+  }
+
+  async loadBlockchainData(account) {
+    const web3 = window.web3
+    this.setState({account})
+    const ethBalance = await web3.eth.getBalance(this.state.account)
+    this.setState({ethBalance})
+    console.log(this.state)
+    const networkId = await web3.eth.net.getId()
+
+    //Load Token
+    const tokenData = Token.networks[networkId]
+    if(tokenData) {
+      const token = new web3.eth.Contract(Token.abi, tokenData.address)
+      this.setState({token})
+      let tokenBalance = await token.methods.balanceOf(this.state.account).call()
+      console.log(tokenBalance.toString())
+      this.setState({tokenBalance: tokenBalance.toString()})
+    } else {
+      window.alert('Token contract not deployed on detected network.')
+    }
+
+    //Load EthSwap
+    const ethSwapData = EthSwap.networks[networkId]
+    if(ethSwapData) {
+      const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address)
+      this.setState({ethSwap})
+    } else {
+      window.alert('EthSwap contract not deployed on detected network.');
+    }
   }
 
   async loadWeb3() {
@@ -83,7 +112,7 @@ class App extends Component {
                   rel="noopener noreferrer"
                 >
                 </a>
-                <h1>Hello World</h1>
+                <Main/>
               </div>
             </main>
           </div>
