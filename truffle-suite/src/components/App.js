@@ -8,7 +8,7 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { account: '', ethBalance: 0 };
+    this.state = { account: '', ethBalance: '0' };
   }
 
   componentDidMount() {
@@ -21,7 +21,7 @@ class App extends Component {
   }
   componentWillUnmount() {
     if (this._asyncRequest) {
-      this._asyncRequest.cancel();
+      this._asyncRequest.disconnect();
     }
   }
 
@@ -31,7 +31,7 @@ class App extends Component {
     this.setState({account: accounts[0]})
     const ethBalance = await web3.eth.getBalance(this.state.account)
     this.setState({ethBalance})
-    console.log(ethBalance)
+    console.log(this.state)
   }
 
   async loadWeb3() {
@@ -50,7 +50,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar account={this.state.account}/>
         <div className="container-fluid mt-5">
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
