@@ -15,25 +15,69 @@ class App extends Component {
     this.state = {
       account: '',
       ethBalance: '0',
-      toke: {},
+      token: {},
       tokenBalance: '0',
       ethSwap: {},
       loading: true
     };
   }
 
+  sendApproveToken(tokenAmount) {
+    console.log(`EthSwap Address: ${this.state.ethSwap.options.address}`)
+    console.log(`TokenAmount: ${tokenAmount}`)
+    console.log(`from: ${this.state.account}`)
+
+    return this.state.token.methods.approve(this.state.ethSwap.options.address, tokenAmount)
+      .send({ from: this.state.account }).on('error', (error) => {
+        this.setState({ loading: false })
+        window.alert('Failed approval transaction, please try again.')
+        console.log('Failed approval transaction, please try again.')
+      }
+      )
+  }
+  sendSellTokens(tokenAmount) {
+    return this.state.ethSwap.methods.sellTokens(tokenAmount)
+      .send({ from: this.state.account }).on('error', (error) => {
+        this.setState({ loading: false })
+        window.alert('Failed swap token transaction, please try again.')
+        console.log('Failed swap token transaction, please try again.')
+      }
+      )
+  }
+
+  sendBuyTokens(etherAmount) {
+    return this.state.ethSwap.methods.buyTokens()
+      .send({ value: etherAmount, from: this.state.account }).on('error', (error) => {
+        this.setState({ loading: false })
+        window.alert('Failed swap token transaction, please try again.')
+        console.log('Failed swap token transaction, please try again.')
+      })
+  }
+
+  sellTokens = (tokenAmount) => {
+    this.setState({ loading: true });
+    try {
+      this.sendApproveToken(tokenAmount).then((receipt) => {
+        this.sendSellTokens(tokenAmount).then((receipt) => {
+          //update the balances in the UI
+          this.loadBlockchainData(this.state.account)
+          this.setState({ loading: false })
+        })
+      })
+    } catch (error) {
+      this.setState({ loading: false })
+      window.alert('Failed transaction, please try again.')
+      console.log('Failed transaction, please try again.')
+    }
+  }
+
   buyTokens = (etherAmount) => {
     this.setState({ loading: true })
-    this.state.ethSwap.methods.buyTokens()
-      .send({ value: etherAmount, from: this.state.account }, (err, transactionHash) => {
-        this.setState({ loading: false })
-        if (!err) {
-          console.log(transactionHash + " success");
-        } else {
-          window.alert('Failed transaction, please try again.')
-          console.log('Failed transaction, please try again.')
-        }
-      })
+    this.sendBuyTokens(etherAmount).then((receipt) => {
+      //update the balances in the UI
+      this.loadBlockchainData(this.state.account)
+      this.setState({ loading: false })
+    })
   }
 
   componentDidMount() {
@@ -129,6 +173,7 @@ class App extends Component {
       ethBalance = {this.state.ethBalance} 
       tokenBalance = {this.state.tokenBalance}
       buyTokens = {this.buyTokens}
+      sellTokens = {this.sellTokens}
       />
     }
     return (
