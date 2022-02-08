@@ -11,7 +11,15 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { account: '', ethBalance: '0', toke: {}, tokenBalance: '0', ethSwap: {} };
+
+    this.state = {
+      account: '',
+      ethBalance: '0',
+      toke: {},
+      tokenBalance: '0',
+      ethSwap: {},
+      loading: true
+    };
   }
 
   componentDidMount() {
@@ -43,32 +51,33 @@ class App extends Component {
 
   async loadBlockchainData(account) {
     const web3 = window.web3
-    this.setState({account})
+    this.setState({ account })
     const ethBalance = await web3.eth.getBalance(this.state.account)
-    this.setState({ethBalance})
+    this.setState({ ethBalance })
     console.log(this.state)
     const networkId = await web3.eth.net.getId()
 
     //Load Token
     const tokenData = Token.networks[networkId]
-    if(tokenData) {
+    if (tokenData) {
       const token = new web3.eth.Contract(Token.abi, tokenData.address)
-      this.setState({token})
+      this.setState({ token })
       let tokenBalance = await token.methods.balanceOf(this.state.account).call()
       console.log(tokenBalance.toString())
-      this.setState({tokenBalance: tokenBalance.toString()})
+      this.setState({ tokenBalance: tokenBalance.toString() })
     } else {
       window.alert('Token contract not deployed on detected network.')
     }
 
     //Load EthSwap
     const ethSwapData = EthSwap.networks[networkId]
-    if(ethSwapData) {
+    if (ethSwapData) {
       const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address)
-      this.setState({ethSwap})
+      this.setState({ ethSwap })
     } else {
       window.alert('EthSwap contract not deployed on detected network.');
     }
+    this.setState({loading:false})
   }
 
   async loadWeb3() {
@@ -77,13 +86,13 @@ class App extends Component {
       // Set the provider for web3 lib. provider here is the same as windows.ethereum
       window.web3 = new Web3(provider);
       //Update account when account is changed
-      provider.on('accountsChanged', (accounts) => {this.handleAccountsChanged(accounts)});
+      provider.on('accountsChanged', (accounts) => { this.handleAccountsChanged(accounts) });
 
       // enable the provider, this will open up the MetaMask wallet and ask the user to unlock
-      provider.request({ method: 'eth_requestAccounts' }).then((accounts) =>{
-            this.handleAccountsChanged(accounts)
-          }
-        ).catch((error) => {
+      provider.request({ method: 'eth_requestAccounts' }).then((accounts) => {
+        this.handleAccountsChanged(accounts)
+      }
+      ).catch((error) => {
         if (error.code === 4001) {
           // EIP-1193 userRejectedRequest error
           window.alert('Please connect to MetaMask.');
@@ -99,9 +108,15 @@ class App extends Component {
   }
 
   render() {
+    let content
+    if (this.state.loading) {
+      content = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      content = <Main state = {this.state} />
+    }
     return (
       <div>
-        <Navbar account={this.state.account}/>
+        <Navbar account={this.state.account} />
         <div className="container-fluid mt-5">
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
@@ -112,7 +127,7 @@ class App extends Component {
                   rel="noopener noreferrer"
                 >
                 </a>
-                <Main/>
+                {content}
               </div>
             </main>
           </div>
