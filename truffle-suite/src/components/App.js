@@ -22,6 +22,20 @@ class App extends Component {
     };
   }
 
+  buyTokens = (etherAmount) => {
+    this.setState({ loading: true })
+    this.state.ethSwap.methods.buyTokens()
+      .send({ value: etherAmount, from: this.state.account }, (err, transactionHash) => {
+        this.setState({ loading: false })
+        if (!err) {
+          console.log(transactionHash + " success");
+        } else {
+          window.alert('Failed transaction, please try again.')
+          console.log('Failed transaction, please try again.')
+        }
+      })
+  }
+
   componentDidMount() {
     this._asyncRequest = this.loadWeb3().then(() => {
         this._asyncRequest = null
@@ -112,7 +126,11 @@ class App extends Component {
     if (this.state.loading) {
       content = <p id="loader" className="text-center">Loading...</p>
     } else {
-      content = <Main state = {this.state} />
+      content = <Main 
+      ethBalance = {this.state.ethBalance} 
+      tokenBalance = {this.state.tokenBalance}
+      buyTokens = {this.buyTokens}
+      />
     }
     return (
       <div>
@@ -121,12 +139,6 @@ class App extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
-                <a
-                  href="http://www.dappuniversity.com/bootcamp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                </a>
                 {content}
               </div>
             </main>

@@ -36,7 +36,8 @@ class Main extends Component {
               </div>
               <div className="input-group mb-4">
                 <input
-                  type="text"
+                  type="number"
+                  step="any"
                   onChange={(event) => {
                     const etherAmount = this.input.value.toString();
                     this.setState({
@@ -68,7 +69,8 @@ class Main extends Component {
               </div>
               <div className="input-group mb-2">
                 <input
-                  type="text"
+                  type="number"
+                  step="any"
                   className="form-control form-control-lg"
                   placeholder="0"
                   value={this.state.output}
