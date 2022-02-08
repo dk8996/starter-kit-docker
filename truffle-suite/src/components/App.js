@@ -50,7 +50,6 @@ class App extends Component {
   }
 
   async handleAccountsChanged(accounts) {
-    console.log("Call handleAccountsChanged")
     if (accounts.length === 0) {
        // MetaMask is locked or the user has not connected any accounts
        console.log('Please connect to MetaMask.')
